@@ -21,27 +21,27 @@ global.doc5 = 'application/pdf'
 global.doc6 = 'application/vnd.android.package-archive'
 
 //owmner v card
-global.owner = ['916909137213'] //ur owner number
-global.ownernomer = "916909137213" //ur owner number2
-global.ownername = "🦄Dream Guy Xeon" //ur owner name
-global.ytname = "YT: Xeon" //ur yt chanel name
-global.socialm = "GitHub: DGXeon" //ur github or insta name
-global.location = "India, Mizoram, Aizawl" //ur location
+global.owner = ['2347082252014'] //ur owner number
+global.ownernomer = "2347082252014" //ur owner number2
+global.ownername = "Quadhir" //ur owner name
+global.ytname = "YT: Duxbot6413" //ur yt chanel name
+global.socialm = "GitHub: Duxlin" //ur github or insta name
+global.location = "Nigeria, Lagos" //ur location
 
 //new
-global.botname = "Cheems Bot MD V8"
-global.ownernumber = '916909137213'
-global.ownername = '🦄드림 가이 Xeon'
-global.ownerNumber = ["916909137213@s.whatsapp.net"]
-global.ownerweb = "https://youtube.com/@DGXeon"
-global.websitex = "https://youtu.be/L_SIk59QeAU"
-global.wagc = "https://chat.whatsapp.com/Dc2qyVeK8JbJq8Gr3U1pKH"
+global.botname = "Dux Bot MD"
+global.ownernumber = '2347082252014'
+global.ownername = '𝐈𝐌𝐌𝐎𝐑𝐓𝐀𝐋 𝐃𝐔𝐗'
+global.ownerNumber = ["2347082252014@s.whatsapp.net"]
+global.ownerweb = "https://youtube.com/@Duxlin"
+global.websitex = "https://youtu.be/duxbot6414"
+global.wagc = "https://chat.whatsapp.com/HQT3QOoiQjG4AIcM3l0xYi/"
 global.themeemoji = '🪀'
-global.wm = "Xeon Bot Inc."
-global.botscript = 'https://github.com/DGXeon/CheemsBot-MD6' //script link
-global.packname = "Sticker By"
-global.author = "🦄드림 가이 Xeon\n\n"
-global.creator = "916909137213@s.whatsapp.net"
+global.wm = "Dux Bot Inc."
+global.botscript = 'https://github.com/Duxlin/Dux-md' //script link
+global.packname = "Sticker By 𝐈𝐦𝐦𝐨𝐫𝐭𝐚𝐥 𝐃𝐮𝐱"
+global.author = "𝐈𝐦𝐦𝐨𝐫𝐭𝐚𝐥 𝐃𝐮𝐱\n\n+2347082252014"
+global.creator = "2347082252014@s.whatsapp.net"
 global.prefa = ['','!','.','#','&']
 global.sessionName = 'session'
 global.hituet = 0

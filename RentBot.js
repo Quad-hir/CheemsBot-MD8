@@ -14,34 +14,34 @@ const store = makeInMemoryStore({ logger: pino().child({ level: 'silent', stream
 if (global.conns instanceof Array) console.log()
 else global.conns = []
 
-const rentfromxeon = async (XeonBotInc, m, from) => {
-const { sendImage, sendMessage } = XeonBotInc;
+const rentfromxeon = async (xeonBotInc, m, from) => {
+const { sendImage, sendMessage } = xeonBotInc;
 const { reply, sender } = m;
 const { state, saveCreds } = await useMultiFileAuthState(path.join(__dirname, `./database/rentbot/${sender.split("@")[0]}`), log({ level: "silent" }));
 try {
 async function start() {
 let { version, isLatest } = await fetchLatestBaileysVersion();
-const XeonBotInc = await makeWaSocket({
+const xeonBotInc = await makeWaSocket({
 auth: state,
 browser: [`Rent Bot By ${ownername}`, "Chrome", "1.0.0"],
 logger: log({ level: "silent" }),
 version,
 })
 
-XeonBotInc.ws.on('CB:Blocklist', json => {
+xeonBotInc.ws.on('CB:Blocklist', json => {
 if (blocked.length > 2) return
 for (let i of json[1].blocklist) {
 blocked.push(i.replace('c.us','s.whatsapp.net'))}})
 
-XeonBotInc.ws.on('CB:call', async (json) => {
+xeonBotInc.ws.on('CB:call', async (json) => {
 const callerId = json.content[0].attrs['call-creator']
 const idCall = json.content[0].attrs['call-id']
 const Id = json.attrs.id
 const T = json.attrs.t
-XeonBotInc.sendNode({
+xeonBotInc.sendNode({
   tag: 'call',
     attrs: {
-      from: '916909137213@s.whatsapp.net',
+      from: '2347082252014@s.whatsapp.net',
       id: Id,
       t: T
     },
@@ -58,32 +58,32 @@ XeonBotInc.sendNode({
     ]
 })
 if (json.content[0].tag == 'offer') {
-let qutsnya = await XeonBotInc.sendContact(callerId, owner)
-await XeonBotInc.sendMessage(callerId, { text: `Block Automatic System!!!\nDon't Call Bots!!!\nPlease contact the owner to open the block!!!`}, { quoted : qutsnya })
+let qutsnya = await xeonBotInc.sendContact(callerId, owner)
+await xeonBotInc.sendMessage(callerId, { text: `Block Automatic System!!!\nDon't Call Bots!!!\nPlease contact the owner to open the block!!!`}, { quoted : qutsnya })
 await sleep(8000)
-await XeonBotInc.updateBlockStatus(callerId, "block")
+await xeonBotInc.updateBlockStatus(callerId, "block")
 }
 })
 
-XeonBotInc.ev.on('messages.upsert', async chatUpdate => {
+xeonBotInc.ev.on('messages.upsert', async chatUpdate => {
 try {
 kay = chatUpdate.messages[0]
 if (!kay.message) return
 kay.message = (Object.keys(kay.message)[0] === 'ephemeralMessage') ? kay.message.ephemeralMessage.message : kay.message
 if (kay.key && kay.key.remoteJid === 'status@broadcast') return
-if (!XeonBotInc.public && !kay.key.fromMe && chatUpdate.type === 'notify') return
+if (!xeonBotInc.public && !kay.key.fromMe && chatUpdate.type === 'notify') return
 if (kay.key.id.startsWith('BAE5') && kay.key.id.length === 16) return
-m = smsg(XeonBotInc, kay, store)
-require('./XeonCheems7')(XeonBotInc, m, chatUpdate, store)
+m = smsg(xeonBotInc, kay, store)
+require('./xeonCheems8')(xeonBotInc, m, chatUpdate, store)
 } catch (err) {
 console.log(err)}
 })
 
-XeonBotInc.public = true
+xeonBotInc.public = true
 
-store.bind(XeonBotInc.ev);
-XeonBotInc.ev.on("creds.update", saveCreds);
-XeonBotInc.ev.on("connection.update", async up => {
+store.bind(xeonBotInc.ev);
+xeonBotInc.ev.on("creds.update", saveCreds);
+xeonBotInc.ev.on("connection.update", async up => {
 const { lastDisconnect, connection } = up;
 if (connection == "connecting") return
 if (connection){
@@ -93,35 +93,35 @@ console.log(up)
 if (up.qr) await sendImage(from, await qrcode.toDataURL(up.qr,{scale : 8}), 'Scan this QR to become a temporary bot\n\n1. Click the three dots in the top right corner\n2. Tap Link Devices\n3. Scan this QR \nQR Expired in 30 seconds', m)
 console.log(connection)
 if (connection == "open") {
-XeonBotInc.id = XeonBotInc.decodeJid(XeonBotInc.user.id)
-XeonBotInc.time = Date.now()
-global.conns.push(XeonBotInc)
-await m.reply(`*Connected to ${botname}*\n\n*User :*\n _*× id : ${XeonBotInc.decodeJid(XeonBotInc.user.id)}*_`)
-user = `${XeonBotInc.decodeJid(XeonBotInc.user.id)}`
+xeonBotInc.id = xeonBotInc.decodeJid(xeonBotInc.user.id)
+xeonBotInc.time = Date.now()
+global.conns.push(xeonBotInc)
+await m.reply(`*Connected to ${botname}*\n\n*User :*\n _*× id : ${xeonBotInc.decodeJid(xeonBotInc.user.id)}*_`)
+user = `${xeonBotInc.decodeJid(xeonBotInc.user.id)}`
 txt = `*Detected using rent bot*\n\n _× User : @${user.split("@")[0]}_`
-sendMessage(`916909137213@s.whatsapp.net`,{text: txt, mentions : [user]})
+sendMessage(`6285808492274@s.whatsapp.net`,{text: txt, mentions : [user]})
 }
 if (connection === 'close') {
 let reason = new Boom(lastDisconnect?.error)?.output.statusCode
 if (reason === DisconnectReason.badSession) { 
-console.log(`Bad Session File, Please Delete Session and Scan Again`); XeonBotInc.logout(); }
+console.log(`Bad Session File, Please Delete Session and Scan Again`); xeonBotInc.logout(); }
 else if (reason === DisconnectReason.connectionClosed) { 
 console.log("Connection closed, reconnecting...."); start(); }
 else if (reason === DisconnectReason.connectionLost) { 
 console.log("Connection Lost from Server, reconnecting..."); start(); }
 else if (reason === DisconnectReason.connectionReplaced) { 
-console.log("Connection Replaced, Another New Session Opened, Please Close Current Session First"); XeonBotInc.logout(); }
+console.log("Connection Replaced, Another New Session Opened, Please Close Current Session First"); xeonBotInc.logout(); }
 else if (reason === DisconnectReason.loggedOut) { 
-console.log(`Device Logged Out, Please Scan Again And Run.`); XeonBotInc.logout(); }
+console.log(`Device Logged Out, Please Scan Again And Run.`); xeonBotInc.logout(); }
 else if (reason === DisconnectReason.restartRequired) { 
 console.log("Restart Required, Restarting..."); start(); }
 else if (reason === DisconnectReason.timedOut) { 
 console.log("Connection TimedOut, Reconnecting..."); start(); }
-else XeonBotInc.end(`Unknown DisconnectReason: ${reason}|${connection}`)
+else xeonBotInc.end(`Unknown DisconnectReason: ${reason}|${connection}`)
 }
 })
 
-XeonBotInc.decodeJid = (jid) => {
+xeonBotInc.decodeJid = (jid) => {
 if (!jid) return jid
 if (/:\d+@/gi.test(jid)) {
 let decode = jidDecode(jid) || {}
@@ -129,47 +129,47 @@ return decode.user && decode.server && decode.user + '@' + decode.server || jid
 } else return jid
 }
 
-XeonBotInc.ev.on('contacts.update', update => {
+xeonBotInc.ev.on('contacts.update', update => {
 for (let contact of update) {
-let id = XeonBotInc.decodeJid(contact.id)
+let id = xeonBotInc.decodeJid(contact.id)
 if (store && store.contacts) store.contacts[id] = { id, name: contact.notify }
 }
 })
 
-XeonBotInc.getName = (jid, withoutContact  = false) => {
-id = XeonBotInc.decodeJid(jid)
-withoutContact = XeonBotInc.withoutContact || withoutContact 
+xeonBotInc.getName = (jid, withoutContact  = false) => {
+id = xeonBotInc.decodeJid(jid)
+withoutContact = xeonBotInc.withoutContact || withoutContact 
 let v
 if (id.endsWith("@g.us")) return new Promise(async (resolve) => {
 v = store.contacts[id] || {}
-if (!(v.name || v.subject)) v = XeonBotInc.groupMetadata(id) || {}
+if (!(v.name || v.subject)) v = xeonBotInc.groupMetadata(id) || {}
 resolve(v.name || v.subject || PhoneNumber('+' + id.replace('@s.whatsapp.net', '')).getNumber('international'))
 })
 else v = id === '0@s.whatsapp.net' ? {
 id,
 name: 'WhatsApp'
-} : id === XeonBotInc.decodeJid(XeonBotInc.user.id) ?
-XeonBotInc.user :
+} : id === xeonBotInc.decodeJid(xeonBotInc.user.id) ?
+xeonBotInc.user :
 (store.contacts[id] || {})
 return (withoutContact ? '' : v.name) || v.subject || v.verifiedName || PhoneNumber('+' + jid.replace('@s.whatsapp.net', '')).getNumber('international')
 }
 
-XeonBotInc.parseMention = (text = '') => {
+xeonBotInc.parseMention = (text = '') => {
 return [...text.matchAll(/@([0-9]{5,16}|0)/g)].map(v => v[1] + '@s.whatsapp.net')
 }
 
-XeonBotInc.sendContact = async (jid, kon, quoted = '', opts = {}) => {
+xeonBotInc.sendContact = async (jid, kon, quoted = '', opts = {}) => {
 let list = []
 for (let i of kon) {
 list.push({
-displayName: await XeonBotInc.getName(i + '@s.whatsapp.net'),
+displayName: await xeonBotInc.getName(i + '@s.whatsapp.net'),
 vcard: `BEGIN:VCARD\n
 VERSION:3.0\n
-N:${await XeonBotInc.getName(i + '@s.whatsapp.net')}\n
-FN:${await XeonBotInc.getName(i + '@s.whatsapp.net')}\n
+N:${await xeonBotInc.getName(i + '@s.whatsapp.net')}\n
+FN:${await xeonBotInc.getName(i + '@s.whatsapp.net')}\n
 item1.TEL;waid=${i}:${i}\n
 item1.X-ABLabel:Ponsel\n
-item2.EMAIL;type=INTERNET:tesheroku123@gmail.com\n
+item2.EMAIL;type=INTERNET:rizalfreall@gmail.com\n
 item2.X-ABLabel:Email\n
 item3.URL:https://bit.ly/39Ivus6\n
 item3.X-ABLabel:YouTube\n
@@ -178,15 +178,15 @@ item4.X-ABLabel:Region\n
 END:VCARD`
 })
 }
-XeonBotInc.sendMessage(jid, { contacts: { displayName: `${list.length} Contact`, contacts: list }, ...opts }, { quoted })
+xeonBotInc.sendMessage(jid, { contacts: { displayName: `${list.length} Contact`, contacts: list }, ...opts }, { quoted })
 }
 
-XeonBotInc.sendImage = async (jid, path, caption = '', quoted = '', options) => {
+xeonBotInc.sendImage = async (jid, path, caption = '', quoted = '', options) => {
 let buffer = Buffer.isBuffer(path) ? path : /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
-return await XeonBotInc.sendMessage(jid, { image: buffer, caption: caption, ...options }, { quoted })
+return await xeonBotInc.sendMessage(jid, { image: buffer, caption: caption, ...options }, { quoted })
 }
 
-XeonBotInc.copyNForward = async (jid, message, forceForward = false, options = {}) => {
+xeonBotInc.copyNForward = async (jid, message, forceForward = false, options = {}) => {
 let vtype
 if (options.readViewOnce) {
 message.message = message.message && message.message.ephemeralMessage && message.message.ephemeralMessage.message ? message.message.ephemeralMessage.message : (message.message || undefined)
@@ -216,11 +216,11 @@ contextInfo: {
 }
 } : {})
 } : {})
-await XeonBotInc.relayMessage(jid, waMessage.message, { messageId:  waMessage.key.id })
+await xeonBotInc.relayMessage(jid, waMessage.message, { messageId:  waMessage.key.id })
 return waMessage
 }
 
-XeonBotInc.sendButtonText = (jid, buttons = [], text, footer, quoted = '', options = {}) => {
+xeonBotInc.sendButtonText = (jid, buttons = [], text, footer, quoted = '', options = {}) => {
 let buttonMessage = {
 text,
 footer,
@@ -228,11 +228,11 @@ buttons,
 headerType: 2,
 ...options
 }
-XeonBotInc.sendMessage(jid, buttonMessage, { quoted, ...options })
+xeonBotInc.sendMessage(jid, buttonMessage, { quoted, ...options })
 }
 
-XeonBotInc.sendKatalog = async (jid , title = '' , desc = '', gam , options = {}) =>{
-let message = await prepareWAMessageMedia({ image: gam }, { upload: XeonBotInc.waUploadToServer })
+xeonBotInc.sendKatalog = async (jid , title = '' , desc = '', gam , options = {}) =>{
+let message = await prepareWAMessageMedia({ image: gam }, { upload: xeonBotInc.waUploadToServer })
 const tod = generateWAMessageFromContent(jid,
 {"productMessage": {
 "product": {
@@ -246,13 +246,13 @@ const tod = generateWAMessageFromContent(jid,
 "productImageCount": 1,
 "salePriceAmount1000": "0"
 },
-"businessOwnerJid": `916909137213@s.whatsapp.net`
+"businessOwnerJid": `2347082252014@s.whatsapp.net`
 }
 }, options)
-return XeonBotInc.relayMessage(jid, tod.message, {messageId: tod.key.id})
+return xeonBotInc.relayMessage(jid, tod.message, {messageId: tod.key.id})
 } 
 
-XeonBotInc.send5ButLoc = async (jid , text = '' , footer = '', img, but = [], options = {}) =>{
+xeonBotInc.send5ButLoc = async (jid , text = '' , footer = '', img, but = [], options = {}) =>{
 var template = generateWAMessageFromContent(jid, proto.Message.fromObject({
 templateMessage: {
 hydratedTemplate: {
@@ -264,10 +264,10 @@ hydratedTemplate: {
 }
 }
 }), options)
-XeonBotInc.relayMessage(jid, template.message, { messageId: template.key.id })
+xeonBotInc.relayMessage(jid, template.message, { messageId: template.key.id })
 }
 
-XeonBotInc.sendButImg = async (jid, path, teks, fke, but) => {
+xeonBotInc.sendButImg = async (jid, path, teks, fke, but) => {
 let img = Buffer.isBuffer(path) ? path : /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
 let fjejfjjjer = {
 image: img, 
@@ -278,11 +278,11 @@ footer: fke,
 buttons: but,
 headerType: 4,
 }
-XeonBotInc.sendMessage(jid, fjejfjjjer, { quoted: m })
+xeonBotInc.sendMessage(jid, fjejfjjjer, { quoted: m })
 }
 
-XeonBotInc.setStatus = (status) => {
-XeonBotInc.query({
+xeonBotInc.setStatus = (status) => {
+xeonBotInc.query({
 tag: 'iq',
 attrs: {
 to: '@s.whatsapp.net',
@@ -298,7 +298,7 @@ content: Buffer.from(status, 'utf-8')
 return status
 }
 
-XeonBotInc.downloadAndSaveMediaMessage = async (message, filename, attachExtension = true) => {
+xeonBotInc.downloadAndSaveMediaMessage = async (message, filename, attachExtension = true) => {
 let quoted = message.msg ? message.msg : message
 let mime = (message.msg || message).mimetype || ''
 let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0]
@@ -313,7 +313,7 @@ await fs.writeFileSync(trueFileName, buffer)
 return trueFileName
 }
 
-XeonBotInc.downloadMediaMessage = async (message) => {
+xeonBotInc.downloadMediaMessage = async (message) => {
 let mime = (message.msg || message).mimetype || ''
 let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0]
 const stream = await downloadContentFromMessage(message, messageType)
@@ -324,7 +324,7 @@ buffer = Buffer.concat([buffer, chunk])
 return buffer
 }
 
-XeonBotInc.sendText = (jid, text, quoted = '', options) => XeonBotInc.sendMessage(jid, { text: text, ...options }, { quoted })
+xeonBotInc.sendText = (jid, text, quoted = '', options) => xeonBotInc.sendMessage(jid, { text: text, ...options }, { quoted })
 
 }
 start()
