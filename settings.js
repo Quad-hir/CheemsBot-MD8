@@ -21,8 +21,8 @@ global.doc5 = 'application/pdf'
 global.doc6 = 'application/vnd.android.package-archive'
 
 //owmner v card
-global.owner = ['2347082252014'] //ur owner number
-global.ownernomer = "2347082252014" //ur owner number2
+global.owner = ['2347082252014','2348063746874'] //ur owner number
+global.ownernomer = "2347082252014","2348063746874" //ur owner number2
 global.ownername = "Quadhir" //ur owner name
 global.ytname = "YT: Duxbot6413" //ur yt chanel name
 global.socialm = "GitHub: Duxlin" //ur github or insta name
@@ -30,7 +30,7 @@ global.location = "Nigeria, Lagos" //ur location
 
 //new
 global.botname = "Dux Bot MD"
-global.ownernumber = '2347082252014'
+global.ownernumber = '2347082252014','2348063746874'
 global.ownername = '𝐈𝐌𝐌𝐎𝐑𝐓𝐀𝐋 𝐃𝐔𝐗'
 global.ownerNumber = ["2347082252014@s.whatsapp.net"]
 global.ownerweb = "https://youtube.com/@Duxlin"
